@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <script src="main.js"></script>
+    <title>绘图</title>
+</head>
+<body>
+<div class="tool-bar">
+    <div class="tool">
+        <div class="image"></div>
+        <div class="text">矩形</div>
+    </div>
+</div>
+<canvas id="canvas"></canvas>
+</body>
+<style>
+    html {
+        padding: 0;
+    }
+    body {
+        padding: 0;
+        margin: 0;
+        width: 100vw;
+        height: 100vh;
+        display: flex;
+        justify-content: flex-start;
+        align-items: stretch;
+    }
+    .tool-bar {
+        width: 80px;
+        border-right: 1px solid #ccc;
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-start;
+        align-items: center;
+        text-align: center;
+    }
+    .tool {
+        width: 100%;
+        border-bottom: 1px solid #ccc;
+    }
+    .tool-bar .image {
+        width: 60px;
+        height: 60px;
+    }
+    canvas {
+        flex: 1;
+    }
+</style>
+</html>
