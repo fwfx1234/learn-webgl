@@ -5,7 +5,7 @@ import {gui, initStats} from "./index";
 
 let cacheVShader = ''
 let cacheFShader = ''
-export function initShader(gl: WebGLRenderingContext, vShaderSource:string, fShaderSource: string, debug:boolean = false) {
+export function initShader(gl: WebGLRenderingContext, vShaderSource:string, fShaderSource: string, debug:boolean = false): WebGLProgram {
     if (cacheFShader === fShaderSource && cacheVShader === vShaderSource) {
         return
     }
@@ -32,6 +32,7 @@ export function initShader(gl: WebGLRenderingContext, vShaderSource:string, fSha
     if (!linked) {
         console.warn('linkProgram', linked)
     }
+    return program
 }
 
 
@@ -47,6 +48,7 @@ interface IRenderResult {
     renderer: Function
     gui: dat.GUI
 }
+
 export function createRenderer(r: IRenderParams): IRenderResult {
     const stats = initStats();
     const g:dat.GUI = gui()
@@ -60,4 +62,14 @@ export function createRenderer(r: IRenderParams): IRenderResult {
         renderer,
         gui: g
     }
+}
+export function createBuffer(gl: WebGLRenderingContext, vertices: Float32Array, size: number): number {
+    const verticesBuffer: WebGLBuffer = gl.createBuffer()
+    if (!verticesBuffer) {
+        console.error(verticesBuffer, vertices)
+        return -1
+    }
+    gl.bindBuffer(gl.ARRAY_BUFFER, verticesBuffer)
+    gl.bufferData(gl.ARRAY_BUFFER, vertices, gl.STATIC_DRAW)
+    return vertices.length / size
 }
