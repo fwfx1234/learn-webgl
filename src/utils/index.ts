@@ -12,14 +12,14 @@ import {TrackballControls} from './TrackballControls'
 
 
 export function gui() {
+    // 不需要手动加入dom
     const gui = new dat.GUI();
-    document.documentElement.append(gui.dom)
     return gui
 }
 
 export function initStats() {
     const stats = new Stats()
-    document.documentElement.append(stats.dom)
+    document.body.append(stats.dom)
     return stats
 }
 

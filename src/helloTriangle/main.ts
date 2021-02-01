@@ -33,7 +33,7 @@ window.onload = function () {
         console.error('error', a_Position)
     }
     const u_Color = gl.getUniformLocation(program, 'u_Color')
-    const points: Array<number> = [0.5, 0.5, -0.5, 0.5, 0.5, -0.5]
+    const points: Array<number> = [0.5, 0.5, -0.5, 0.5, 0.5, -0.5, -0.5, -0.5]
 
     const n = createBuffer(gl, new Float32Array(points), 2)
     gl.vertexAttribPointer(a_Position, 2, gl.FLOAT, false, 0, 0)
@@ -42,7 +42,7 @@ window.onload = function () {
     function draw() {
         gl.clear(gl.COLOR_BUFFER_BIT)
         gl.uniform4f(u_Color, controller.r, controller.g, controller.b, 1.0)
-        gl.drawArrays(gl.TRIANGLES, 0, n)
+        gl.drawArrays(gl.TRIANGLE_STRIP, 0, n)
     }
 
     let {renderer, gui} = createRenderer({

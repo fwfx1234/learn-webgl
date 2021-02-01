@@ -61,6 +61,10 @@ module.exports = {
                     loader: "ts-loader"
                 }]
 
+            },
+            {
+                test: /\.(vert|frag|geom)$/,
+                use: 'raw-loader'
             }
         ]
     },
