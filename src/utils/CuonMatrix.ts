@@ -51,7 +51,7 @@ class Matrix4 {
 
         return this;
     }
-    Matrix4.prototype.transpose = function() {
+   transpose() {
         var e, t;
 
         e = this.elements;
