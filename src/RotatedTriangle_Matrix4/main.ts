@@ -1,6 +1,7 @@
 import fShader from './fShaderSource.frag'
 import vShader from './vShaderSource.vert'
 import {initShader, createRenderer, createBuffer} from '../utils/shader'
+import Matrix4 from '../utils/CuonMatrix'
 
 window.onload = function () {
     const canvas: HTMLCanvasElement = document.querySelector("canvas")
@@ -21,42 +22,32 @@ window.onload = function () {
         public x: number = 0.0
         public y: number = 0.0
         public a: number = 0
-        public s: number = 0.005
+        public s: number = 1
     }
 
     const controller = new Controller()
     let arr: Array<number> = []
-    for(let i = 0; i < 360; i+=1) {
+    for(let i = 0; i < 360; i+=60) {
         arr.push(0.3 * Math.cos(i * Math.PI / 180), 0.3 * Math.sin(i * Math.PI / 180))
     }
     const n = createBuffer(gl, new Float32Array(arr), 2)
     gl.vertexAttribPointer(a_Position, 2, gl.FLOAT, false, 0, 0)
     gl.enableVertexAttribArray(a_Position)
     let i = 0;
-    function render() {
+    let matrix4 = new Matrix4()
+    let translateMatrix = new Matrix4()
+    function render(timeSpan: number) {
+        // timeSpan 上次调用历时
         gl.clearColor(1.0, 1.0, 1.0, 1)
         gl.clear(gl.COLOR_BUFFER_BIT)
         gl.uniform4f(u_Color, controller.r, controller.g, controller.b, 1.0)
-        //[ 1, 0, 0, dx,    x
-        //  0, 1, 0, dy,    y
-        //  0, 0, 1, dz,    z
-        //  0, 0, 0, 1      1
-        //]
-        const matrix = new Float32Array([
-            1, 0, 0, 0,
-            0, 1, 0, 0,
-            0, 0, 1, 0,
-            controller.x, controller.y, 0, 1
-        ])
-        gl.uniformMatrix4fv(u_Matrix, false, matrix)
-        gl.uniformMatrix4fv(u_RotateMatrix, false, new Float32Array([
-            Math.cos(controller.a), Math.sin(controller.a), 0, 0,
-            -Math.sin(controller.a), Math.cos(controller.a), 0, 0,
-            0, 0, 1, 0,
-            0, 0, 0, 1
-        ]))
+        matrix4.setRotate(0, 0,0, 1)
+        gl.uniformMatrix4fv(u_RotateMatrix, false, matrix4.elements)
+
+        translateMatrix.setTranslate(controller.x, controller.y, 0)
+        gl.uniformMatrix4fv(u_Matrix, false, translateMatrix.rotate(controller.a, 0, 0, 1).elements)
         gl.drawArrays(gl.TRIANGLE_FAN, 0, n)
-        controller.a -= controller.s
+        controller.a += (controller.s * (Math.PI / 180) * timeSpan) / 1000
     }
 
 
@@ -71,5 +62,5 @@ window.onload = function () {
     gui.add(controller, 'x', -1.0, 1.0)
     gui.add(controller, 'y', -1.0, 1.0)
     gui.add(controller, 'a', 0.0, Math.PI * 2)
-    gui.add(controller, 's', 0.001, 1.0)
+    gui.add(controller, 's', 1, 3600)
 }

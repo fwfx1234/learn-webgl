@@ -52,10 +52,12 @@ interface IRenderResult {
 export function createRenderer(r: IRenderParams): IRenderResult {
     const stats = initStats();
     const g:dat.GUI = gui()
-
+    let _time = Date.now()
     const renderer = () => {
         stats.update()
-        r.cb()
+        let t = Date.now()
+        r.cb(t - _time)
+        _time = t
         ref(renderer)
     }
     return {
@@ -72,4 +74,27 @@ export function createBuffer(gl: WebGLRenderingContext, vertices: Float32Array, 
     gl.bindBuffer(gl.ARRAY_BUFFER, verticesBuffer)
     gl.bufferData(gl.ARRAY_BUFFER, vertices, gl.STATIC_DRAW)
     return vertices.length / size
+}
+
+export function initTextures(gl: WebGLRenderingContext, indexTexture: number, src: string):Promise<boolean|string> {
+    const texture: WebGLTexture = gl.createTexture();
+    const image: HTMLImageElement = new Image()
+    image.src = src
+    return new Promise(((resolve, reject) => {
+        image.onload = function () {
+            gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, 1) // 对纹理图像进行y轴翻转
+            gl.activeTexture(indexTexture) // 激活第n个纹理
+            gl.bindTexture(gl.TEXTURE_2D, texture)
+            gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST);
+            gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST);
+            gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
+            gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+            gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGB, gl.RGB, gl.UNSIGNED_BYTE, image)
+            resolve(true)
+        }
+        image.onerror = function (error) {
+            reject(error)
+        }
+    }))
+
 }
