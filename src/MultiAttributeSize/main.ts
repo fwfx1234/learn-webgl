@@ -1,5 +1,5 @@
 import fShader from './fShaderSource.frag'
-import vShader from './vShaderSource.vert'
+import vShader from './VShaderSource.vert'
 import {initShader, createBuffer, createRenderer} from '../utils/shader'
 
 window.onload = function () {
