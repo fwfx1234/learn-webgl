@@ -74,3 +74,5 @@
     gl.enableVertexAttribArray(a_Position)
 ```
 启用之后就可以使用缓冲区里的顶点绘制了
+
+

@@ -19,49 +19,27 @@ function init(): void {
 
     scene.fog = new THREE.Fog(0xffffff, 0.015, 100)
 
-    const axes: THREE.AxesHelper = new THREE.AxesHelper(20)
+    const axes: THREE.AxesHelper = new THREE.AxesHelper(40)
 
     scene.add(axes)
 
-    const planeGeometry: THREE.PlaneGeometry = new THREE.PlaneGeometry(60, 60)
-    const planeMaterial: THREE.MeshLambertMaterial = new THREE.MeshLambertMaterial({
-        color: 0xAAAAAA
-    })
-    const plane: THREE.Mesh = new THREE.Mesh(planeGeometry, planeMaterial)
-    plane.receiveShadow = true
-    plane.rotation.x = -0.5 * Math.PI
-    plane.position.set(0, 0, 0)
-    scene.add(plane)
 
-    const cubeGeometry: THREE.BoxGeometry = new THREE.BoxGeometry(4, 4, 4)
-    const cubeMaterial: THREE.MeshLambertMaterial = new THREE.MeshLambertMaterial({
-        color: 0xffffff,
+
+    const cubeGeometry: THREE.BoxGeometry = new THREE.BoxGeometry(8, 8, 8)
+    const cubeMaterial: THREE.MeshBasicMaterial = new THREE.MeshBasicMaterial({
+        color: 0x00eeee,
+        wireframe: true
     })
-    const cubeList: Array<THREE.Mesh> = []
+    cubeMaterial.transparent = true
+    cubeMaterial.opacity = 0.7
     const cube: THREE.Mesh = new THREE.Mesh(cubeGeometry, cubeMaterial)
-    cube.castShadow = true
-    cube.position.set(-4, 3, 0)
     scene.add(cube)
-    cubeList.push(cube)
 
     const sphereGeometry: THREE.SphereGeometry = new THREE.SphereGeometry(4, 20, 20)
     const sphereMaterial: THREE.MeshLambertMaterial = new THREE.MeshLambertMaterial({
         color: 0xffffff,
     })
 
-    const sphere: THREE.Mesh = new THREE.Mesh(sphereGeometry, sphereMaterial)
-    sphere.castShadow = true
-    sphere.position.set(20, 3, 0)
-    scene.add(sphere)
-
-    const spotLight: THREE.Light = new THREE.SpotLight(0xffffff)
-    spotLight.position.set(-40, 40, -15)
-    spotLight.castShadow = true
-    spotLight.shadow.mapSize = new THREE.Vector2(1024, 1024)
-    spotLight.shadow.camera.far = 130
-    spotLight.shadow.camera.neer = 40
-
-    scene.add(spotLight)
 
     camera.position.set(0, 40, 30)
     camera.lookAt(scene.position)
@@ -79,17 +57,12 @@ function init(): void {
             cube.castShadow = true
             cube.position.set(Math.ceil(Math.random() * 60) - 30, 3, Math.ceil(Math.random() * 60) - 30)
             scene.add(cube)
-            cubeList.push(cube)
         }
     }
 
 
     function rotationCube() {
-        for (let i = 0; i < cubeList.length; i++) {
-            cubeList[i].rotation.x += controller.rotationSpeed
-            cubeList[i].rotation.y += controller.rotationSpeed
-            cubeList[i].rotation.z += controller.rotationSpeed
-        }
+
 
     }
 
@@ -97,8 +70,6 @@ function init(): void {
 
     function bounceSphere() {
         step += controller.bounceSpeed
-        sphere.position.x = 20 + 10 * Math.cos(step)
-        sphere.position.y = 2 + 10 * Math.abs(Math.sin(step))
     }
 
     function renderScene() {
