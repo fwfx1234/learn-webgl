@@ -217,6 +217,9 @@ class Matrix4 {
       bottom: number, 
       near: number, 
       far: number): Matrix4 {
+          // 正交矩阵，做归一化就完了
+          // 假设矩阵的点(ex,ey,ez)
+          // 规范化的设备坐标(nx,ny,nz)
           const e = this.elements;
           const rw = 1 / (right - left);
           const rh = 1 / (top - bottom);
@@ -231,6 +234,109 @@ class Matrix4 {
   
     return this
   }
+  public setFrustum (left: number, 
+    right: number, 
+    top: number, 
+    bottom: number, 
+    near: number, 
+    far: number)
+    {
+        let e, rw, rh, rd;
+
+        if (left === right || top === bottom || near === far)
+        {
+            throw "null frustum";
+        }
+        if (near <= 0)
+        {
+            throw "near <= 0";
+        }
+        if (far <= 0)
+        {
+            throw "far <= 0";
+        }
+
+        rw = 1 / (right - left);
+        rh = 1 / (top - bottom);
+        rd = 1 / (far - near);
+
+        e = this.elements;
+
+        e[0] = 2 * near * rw;
+        e[1] = 0;
+        e[2] = 0;
+        e[3] = 0;
+
+        e[4] = 0;
+        e[5] = 2 * near * rh;
+        e[6] = 0;
+        e[7] = 0;
+
+        e[8] = (right + left) * rw;
+        e[9] = (top + bottom) * rh;
+        e[10] = -(far + near) * rd;
+        e[11] = -1;
+
+        e[12] = 0;
+        e[13] = 0;
+        e[14] = -2 * near * far * rd;
+        e[15] = 0;
+
+        return this;
+    }
+
+
+    public setPerspective (fovy: number, aspect:number, near:number, far:number)
+    {
+        let e, rd, s, ct;
+
+        if (near === far || aspect === 0)
+        {
+            throw "null frustum";
+        }
+        if (near <= 0)
+        {
+            throw "near <= 0";
+        }
+        if (far <= 0)
+        {
+            throw "far <= 0";
+        }
+
+        fovy = Math.PI * fovy / 180 / 2;
+        s = Math.sin(fovy);
+        if (s === 0)
+        {
+            throw "null frustum";
+        }
+
+        rd = 1 / (far - near);
+        ct = Math.cos(fovy) / s;
+
+        e = this.elements;
+
+        e[0] = ct / aspect;
+        e[1] = 0;
+        e[2] = 0;
+        e[3] = 0;
+
+        e[4] = 0;
+        e[5] = ct;
+        e[6] = 0;
+        e[7] = 0;
+
+        e[8] = 0;
+        e[9] = 0;
+        e[10] = -(far + near) * rd;
+        e[11] = -1;
+
+        e[12] = 0;
+        e[13] = 0;
+        e[14] = -2 * near * far * rd;
+        e[15] = 0;
+
+        return this;
+    }
 }
 
 export default Matrix4
