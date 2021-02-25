@@ -100,6 +100,7 @@ window.onload = function () {
     r: 0.01,
   }
   const camera = new Matrix4()
+  camera.setOrtho(-0.5, 0.5, -0.5, 0.5, 0, 0.5)
   const translate = new Matrix4()
   translate.setRotate(0, 0, 0, 1)
   function render() {

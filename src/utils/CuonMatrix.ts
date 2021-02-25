@@ -183,32 +183,29 @@ class Matrix4 {
     // 观察平面法向量VPN (View Plane Normal)  forward  +z
     // 相机顶部正朝向:VUV (View Up Vector) 理解为相机侧面 size x
     const forward = new Vec3([atX - eyeX, atY - eyeY, atZ - eyeZ]).normalize()
-
     const side = forward.crossMultiply(new Vec3([upX, upY, upZ])).normalize()
+    const up = side.crossMultiply(forward)
 
-    const up = forward.crossMultiply(side)
-
-    
     // 将一个坐标系的基可以看做另一个坐标系的一个向量的分解 u = Mv
     // 相机坐标是在世界坐标里算出来的
     const e = this.elements
     e[0] = side.x
     e[1] = up.x
     e[2] = -forward.x
-    e[3] = -eyeX
+    e[3] = 0
     e[4] = side.y
     e[5] = up.y
     e[6] = -forward.y
-    e[7] = -eyeY
+    e[7] = 0
     e[8] = side.z
     e[9] = up.z
     e[10] = -forward.z
-    e[11] = -eyeZ
+    e[11] = 0
     e[12] = 0
     e[13] = 0
     e[14] = 0
     e[15] = 1
-    return this
+    return this.translate(-eyeX, -eyeY, -eyeZ)
   }
   setOrtho(
       left: number, 
