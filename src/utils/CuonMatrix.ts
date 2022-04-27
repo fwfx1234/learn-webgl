@@ -207,6 +207,21 @@ class Matrix4 {
     e[15] = 1
     return this.translate(-eyeX, -eyeY, -eyeZ)
   }
+  lookAt(
+    eyeX: number,
+    eyeY: number,
+    eyeZ: number,
+    atX: number,
+    atY: number,
+    atZ: number,
+    upX: number,
+    upY: number,
+    upZ: number
+  ): Matrix4 {
+    const m: Matrix4 = new Matrix4()
+    m.setLookAt( eyeX,eyeY,eyeZ,atX,atY,atZ,upX,upY,upZ)
+    return this.multiply(m)
+  }
   setOrtho(
       left: number, 
       right: number, 
